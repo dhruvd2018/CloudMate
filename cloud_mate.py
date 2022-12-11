@@ -7,6 +7,8 @@ import os
 import google.auth
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+import json 
+
 
 
 # Set the GOOGLE_APPLICATION_CREDENTIALS environment variable
@@ -24,15 +26,15 @@ c = conn.cursor()
 # Create a table for storing user information
 c.execute('''CREATE TABLE IF NOT EXISTS users (username text, password text)''')
 
-# Get the default credentials and default project ID
-credentials = "D:\Downloads\carbide-digit-371219-4ffcb9f32608.json"
-credentials, project = google.auth.default(scopes=['https://www.googleapis.com/auth/calendar'])
+# Load the JSON key file
+with open('D:\Downloads\carbide-digit-371219-4ffcb9f32608.json') as key_file:
+    key_data = json.load(key_file)
+
+# Use the key data to create a Credentials object
+creds = Credentials.from_authorized_user_file(key_data, scopes=['https://www.googleapis.com/auth/calendar'])
+
 
 # Use the credentials to create a Credentials object
-creds = Credentials.from_authorized_user_info(info=credentials)
-api_key = creds.token
-
-# Use the credentials to create a Calendar API client
 service = build('calendar', 'v3', credentials=creds)
 
 
